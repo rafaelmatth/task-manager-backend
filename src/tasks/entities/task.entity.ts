@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum TaskStatus {
@@ -17,7 +18,7 @@ export class Task {
   @Column()
   title: string;
 
-  @ApiProperty({ description: 'Task description', example: 'Write comprehensive documentation for the task manager API' })
+  @ApiProperty({ description: 'Task description', example: 'Write comprehensive documentation' })
   @Column('text')
   description: string;
 
@@ -33,13 +34,18 @@ export class Task {
   })
   status: TaskStatus;
 
-  @ApiProperty({ description: 'Creation timestamp', example: '2024-01-01T00:00:00.000Z' })
+  @ApiProperty({ description: 'Creation timestamp' })
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiProperty({ description: 'Last update timestamp', example: '2024-01-01T00:00:00.000Z' })
+  @ApiProperty({ description: 'Last update timestamp' })
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // Relação com User será adicionada depois
+  @ApiProperty({ description: 'User ID' })
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, user => user.tasks, { onDelete: 'CASCADE' })
+  user: User;
 }

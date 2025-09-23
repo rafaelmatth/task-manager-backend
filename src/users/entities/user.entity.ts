@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Task } from '../../tasks/entities/task.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class User {
@@ -16,15 +18,17 @@ export class User {
   name: string;
 
   @Column()
+  @Exclude()
   password: string;
 
-  @ApiProperty({ description: 'Creation timestamp', example: '2024-01-01T00:00:00.000Z' })
+  @ApiProperty({ description: 'Creation timestamp' })
   @CreateDateColumn()
   createdAt: Date;
 
-  @ApiProperty({ description: 'Last update timestamp', example: '2024-01-01T00:00:00.000Z' })
+  @ApiProperty({ description: 'Last update timestamp' })
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // Relação será adicionada depois com Tasks
+  @OneToMany(() => Task, task => task.user)
+  tasks: Task[];
 }
