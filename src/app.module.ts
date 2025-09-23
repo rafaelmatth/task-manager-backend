@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
+import { HealthModule } from './health/health.module';
+
 
 @Module({
   imports: [
@@ -28,7 +30,6 @@ import { redisStore } from 'cache-manager-redis-store';
       }),
       inject: [ConfigService], // Injeta o serviço de configuração
     }),
-
     // 3. Configuração do Cache (Redis)
     CacheModule.registerAsync({
       isGlobal: true,
@@ -44,6 +45,7 @@ import { redisStore } from 'cache-manager-redis-store';
       }),
       inject: [ConfigService],
     }),
+    HealthModule,
   ],
 })
 export class AppModule { }
