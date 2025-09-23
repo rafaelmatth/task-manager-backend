@@ -1,7 +1,8 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { JwtGlobalGuard } from './auth/guards/jwt-global.guard';
 
 async function bootstrap() {
   // 1. Cria a instância da aplicação NestJS
@@ -33,6 +34,10 @@ async function bootstrap() {
       operationsSorter: 'alpha',
     },
   });
+
+  // Guard Global - Protege todas as rotas por padrão
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new JwtGlobalGuard(reflector));
 
   // 2. Configuração global de validação
   app.useGlobalPipes(new ValidationPipe({
