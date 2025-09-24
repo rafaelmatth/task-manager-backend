@@ -29,7 +29,7 @@ npm install
 
 ### 3. Configure as variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto com base no `.env.example`. Exemplo:
+Crie um arquivo `.env` na raiz do projeto com base no `.env.example`.
 
 
 ### 4. Suba os serviços Redis e PostgreSQL com Docker
