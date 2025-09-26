@@ -52,7 +52,7 @@ npx typeorm migration:run -d dist/database/data-source.js
 npm run start:dev
 ```
 
-A API estará disponível em: `http://localhost:3000`.
+A API estará disponível em: `http://localhost:3001`.
 
 ## 📊 Migrações de Banco de Dados
 O projeto usa **TypeORM Migrations** para controle de versão do schema do banco.
@@ -62,7 +62,6 @@ O projeto usa **TypeORM Migrations** para controle de versão do schema do banco
 src/database/
 ├── data-source.ts          # Configuração TypeORM
 ├── migrations/             # Migrações (geradas automaticamente)
-└── ormconfig.ts            # Configuração alternativa
 ```
 
 ### 🔧 Comandos de Migração:
