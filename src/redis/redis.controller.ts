@@ -3,6 +3,11 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '../auth/decorators/public.decorator';
 import { RedisService } from './redis.service';
 
+interface RedisTestValue {
+  message: string;
+  timestamp: string;
+}
+
 @ApiTags('Redis')
 @Controller('redis')
 export class RedisController {
@@ -37,13 +42,13 @@ export class RedisController {
   @ApiOperation({ summary: 'Test Redis connection' })
   async testConnection() {
     const testKey = 'redis:test';
-    const testValue = { 
+    const testValue: RedisTestValue = { 
       message: 'Hello ioredis!', 
       timestamp: new Date().toISOString() 
     };
 
     await this.redisService.setJson(testKey, testValue, 60);
-    const retrieved = await this.redisService.getJson(testKey);
+    const retrieved = await this.redisService.getJson<RedisTestValue>(testKey);
 
     return {
       operation: 'redis_test',

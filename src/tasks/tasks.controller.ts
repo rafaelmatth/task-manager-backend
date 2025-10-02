@@ -24,6 +24,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskFiltersDto } from './dto/task-filters.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
+import type { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 import { Task } from './entities/task.entity';
 
 @ApiTags('Tasks')
@@ -43,7 +44,7 @@ export class TasksController {
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @GetUser() user: any,
+    @GetUser() user: JwtPayload,
   ): Promise<Task> {
     return this.tasksService.create(createTaskDto, user.userId);
   }
@@ -75,7 +76,7 @@ export class TasksController {
   })
   async findAll(
     @Query() filters: TaskFiltersDto,
-    @GetUser() user: any,
+    @GetUser() user: JwtPayload,
   ): Promise<{ tasks: Task[]; total: number }> {
     return this.tasksService.findAll(user.userId, filters);
   }
@@ -93,7 +94,7 @@ export class TasksController {
       }
     }
   })
-  async getStats(@GetUser() user: any) {
+  async getStats(@GetUser() user: JwtPayload) {
     return this.tasksService.getUserTaskStats(user.userId);
   }
 
@@ -107,7 +108,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Task not found' })
   async findOne(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: any,
+    @GetUser() user: JwtPayload,
   ): Promise<Task> {
     return this.tasksService.findOne(id, user.userId);
   }
@@ -125,7 +126,7 @@ export class TasksController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTaskDto: UpdateTaskDto,
-    @GetUser() user: any,
+    @GetUser() user: JwtPayload,
   ): Promise<Task> {
     return this.tasksService.update(id, updateTaskDto, user.userId);
   }
@@ -137,7 +138,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Task not found' })
   async remove(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: any,
+    @GetUser() user: JwtPayload,
   ): Promise<void> {
     return this.tasksService.remove(id, user.userId);
   }

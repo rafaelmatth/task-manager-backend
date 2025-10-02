@@ -8,6 +8,11 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskFiltersDto } from './dto/task-filters.dto';
 import { TaskStatus } from './entities/task.entity';
 
+interface TaskStatsRaw {
+  status: TaskStatus;
+  count: string;
+}
+
 @Injectable()
 export class TasksService {
   private readonly logger = new Logger(TasksService.name);
@@ -135,7 +140,7 @@ export class TasksService {
       .where('task.userId = :userId', { userId })
       .groupBy('task.status')
       .getRawMany();
-
+    
     const result = {
       [TaskStatus.PENDING]: 0,
       [TaskStatus.IN_PROGRESS]: 0,
@@ -143,7 +148,7 @@ export class TasksService {
     };
 
     stats.forEach(stat => {
-      result[stat.status] = parseInt(stat.count);
+      (result as any)[stat.status] = parseInt(stat.count, 10);
     });
 
     await this.redisService.setJson(cacheKey, result, 300);

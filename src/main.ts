@@ -4,7 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { JwtGlobalGuard } from './auth/guards/jwt-global.guard';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   // 1. Cria a instância da aplicação NestJS
   const app = await NestFactory.create(AppModule);
 
