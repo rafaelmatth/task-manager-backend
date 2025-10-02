@@ -102,12 +102,15 @@ export class TasksService {
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto, userId: number): Promise<Task> {
-    const task = await this.findOne(id, userId);
+    await this.findOne(id, userId);
 
-    const updatedTask = this.tasksRepository.merge(task, updateTaskDto);
-    const savedTask = await this.tasksRepository.save(updatedTask);
+    const taskToUpdate = await this.tasksRepository.preload({ id, userId, ...updateTaskDto });
+
+    if (!taskToUpdate) {
+      throw new NotFoundException('Task not found');
+    }
+    const savedTask = await this.tasksRepository.save(taskToUpdate);
     
-    // Invalidar caches no Redis
     await this.redisService.del(`task:${id}:user:${userId}`);
     await this.redisService.invalidateUserTasks(userId);
     this.logger.log(`🔄 Task ${id} atualizada - cache invalidado`);
@@ -116,10 +119,9 @@ export class TasksService {
   }
 
   async remove(id: number, userId: number): Promise<void> {
-    const task = await this.findOne(id, userId);
-    await this.tasksRepository.remove(task);
+    const result = await this.tasksRepository.delete({ id, userId });
+    if (result.affected === 0) throw new NotFoundException('Task not found');
     
-    // Invalidar caches no Redis
     await this.redisService.del(`task:${id}:user:${userId}`);
     await this.redisService.invalidateUserTasks(userId);
     this.logger.log(`🗑️ Task ${id} removida - cache invalidado`);
